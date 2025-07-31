@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox, ttk
+from PIL import Image, ImageTk  # Pillow is required for image support
 
 class ToolTip:
     # Simple tooltip implementation
@@ -33,12 +34,12 @@ class ToolTip:
 def convert_to_inches(value, unit):
     if unit == 'mm':
         return value / 25.4
-    return value  # already in inches
+    return value
 
 def convert_to_mm(value, unit):
     if unit == 'inch':
         return value * 25.4
-    return value  # already in mm
+    return value
 
 def calculate_flatness():
     try:
@@ -50,14 +51,10 @@ def calculate_flatness():
         if L_val == 0:
             raise ZeroDivisionError
 
-        # Convert inputs to consistent units (inches)
         H_in = convert_to_inches(H_val, H_unit)
         L_in = convert_to_inches(L_val, L_unit)
-
-        # Calculate flatness with coefficient 2.467
         I = 2.467 * ((H_in / L_in) ** 2) * 1e5
 
-        # For output: convert values to both units
         H_mm = convert_to_mm(H_val, H_unit)
         L_mm = convert_to_mm(L_val, L_unit)
 
@@ -75,13 +72,23 @@ def calculate_flatness():
 root = tk.Tk()
 root.title("Flatness Calculator with Units & Help")
 
+# --- Add Logo at the top ---
+try:
+    logo_image = Image.open("Logo.png")  # Load the image
+    logo_image = logo_image.resize((100, 100), Image.ANTIALIAS)
+    logo_photo = ImageTk.PhotoImage(logo_image)
+    logo_label = tk.Label(root, image=logo_photo)
+    logo_label.grid(row=0, column=3, rowspan=4, padx=10, pady=10)
+except Exception as e:
+    print("Error loading logo:", e)
+
 # Height input
 tk.Label(root, text="Enter Height (H):").grid(row=0, column=0, padx=10, pady=5, sticky='e')
 entry_H = tk.Entry(root)
 entry_H.grid(row=0, column=1, pady=5, sticky='w')
 
 unit_H = ttk.Combobox(root, values=['mm', 'inch'], width=5)
-unit_H.current(0)  # Default mm
+unit_H.current(0)
 unit_H.grid(row=0, column=2, padx=5, pady=5)
 
 # Length input
@@ -90,7 +97,7 @@ entry_L = tk.Entry(root)
 entry_L.grid(row=1, column=1, pady=5, sticky='w')
 
 unit_L = ttk.Combobox(root, values=['mm', 'inch'], width=5)
-unit_L.current(1)  # Default inch
+unit_L.current(1)
 unit_L.grid(row=1, column=2, padx=5, pady=5)
 
 # Calculate button
@@ -100,6 +107,10 @@ calc_btn.grid(row=2, column=0, columnspan=3, pady=10)
 # Result label
 result_label = tk.Label(root, text="", justify='left')
 result_label.grid(row=3, column=0, columnspan=3, pady=10)
+
+# --- Add credits at the bottom ---
+credit_label = tk.Label(root, text="Coded by: Daniel Van Norman & Anthony Scrivner", font=("Arial", 9, "italic"))
+credit_label.grid(row=4, column=0, columnspan=4, pady=(5, 10))
 
 # Tooltips
 ToolTip(entry_H, "Enter height value.\nUnits selectable on the right.")
