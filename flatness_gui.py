@@ -4,58 +4,83 @@ from PIL import Image, ImageTk
 
 def calculate_flatness():
     try:
-        height = float(height_entry.get())
-        length = float(length_entry.get())
+        h = float(entry_height.get())
+        l = float(entry_length.get())
 
-        if units_var.get() == "Metric (mm & mm)":
-            height_in = height / 25.4
-            length_in = length / 25.4
+        if unit_var.get() == "mm":
+            h_inches = h / 25.4
+            l_inches = l / 25.4
         else:
-            height_in = height
-            length_in = length
+            h_inches = h
+            l_inches = l
 
-        i_units = 2.467 * (height_in / length_in) ** 2 * 1e5
-        result_label.config(text=f"Flatness: {i_units:.2f} I-Units")
+        I = 2.467 * ((h_inches / l_inches) ** 2) * 1e5
+
+        I_mm = I * 25.4
+        result_var.set(f"Imperial: {I:.2f} in⁻¹\nMetric: {I_mm:.2f} mm⁻¹")
     except Exception as e:
-        messagebox.showerror("Error", f"Invalid input.\n{e}")
+        messagebox.showerror("Error", str(e))
 
-app = tk.Tk()
-app.title("Flatness Calculator")
+root = tk.Tk()
+root.title("Flatness Calculator")
+root.geometry("400x450")
+root.resizable(False, False)
 
-# Load logo
-logo = Image.open("assets/logo.png")
-logo = logo.resize((100, 100))
-logo_tk = ImageTk.PhotoImage(logo)
-tk.Label(app, image=logo_tk).pack()
+# Load and display logo
+logo_img = Image.open("assets/logo.png")
+logo_img = logo_img.resize((100, 100))
+logo_photo = ImageTk.PhotoImage(logo_img)
+logo_label = tk.Label(root, image=logo_photo)
+logo_label.pack(pady=10)
 
-# Title and credits
-tk.Label(app, text="Flatness Calculator", font=("Helvetica", 16)).pack(pady=5)
-tk.Label(app, text="Coded by Daniel Van Norman & Anthony Scrivner", font=("Arial", 8)).pack()
+unit_var = tk.StringVar(value="inches")
 
-# Input frame
-frame = tk.Frame(app)
-frame.pack(padx=10, pady=10)
+frame = ttk.Frame(root, padding=10)
+frame.pack()
 
-units_var = tk.StringVar(value="Imperial (mm & inches)")
-unit_menu = ttk.Combobox(frame, textvariable=units_var, values=[
-    "Imperial (mm & inches)",
-    "Metric (mm & mm)"
-], state="readonly", width=30)
-unit_menu.grid(row=0, column=0, columnspan=2, pady=5)
-unit_menu_tooltip = "Choose units:\n- Imperial: Height in mm, Length in inches\n- Metric: Height & Length in mm"
-unit_menu.bind("<Enter>", lambda e: app.title(unit_menu_tooltip))
+ttk.Label(frame, text="Height:").grid(row=0, column=0, sticky="e")
+entry_height = ttk.Entry(frame)
+entry_height.grid(row=0, column=1)
+entry_height.insert(0, "0")
 
-tk.Label(frame, text="Height:").grid(row=1, column=0, sticky="e")
-height_entry = tk.Entry(frame)
-height_entry.grid(row=1, column=1)
+ttk.Label(frame, text="Length:").grid(row=1, column=0, sticky="e")
+entry_length = ttk.Entry(frame)
+entry_length.grid(row=1, column=1)
+entry_length.insert(0, "1")
 
-tk.Label(frame, text="Length:").grid(row=2, column=0, sticky="e")
-length_entry = tk.Entry(frame)
-length_entry.grid(row=2, column=1)
+ttk.Label(frame, text="Units:").grid(row=2, column=0, sticky="e")
+unit_menu = ttk.OptionMenu(frame, unit_var, "inches", "inches", "mm")
+unit_menu.grid(row=2, column=1, sticky="ew")
 
-tk.Button(app, text="Calculate", command=calculate_flatness).pack(pady=10)
+ttk.Button(root, text="Calculate", command=calculate_flatness).pack(pady=10)
 
-result_label = tk.Label(app, text="")
-result_label.pack()
+result_var = tk.StringVar()
+ttk.Label(root, textvariable=result_var, font=("Segoe UI", 12)).pack()
 
-app.mainloop()
+ttk.Label(root, text="Coded by Daniel Van Norman & Anthony Scrivner", font=("Segoe UI", 9)).pack(pady=20)
+
+# Tooltips
+def create_tooltip(widget, text):
+    tooltip = tk.Toplevel(widget)
+    tooltip.withdraw()
+    tooltip.overrideredirect(True)
+    label = tk.Label(tooltip, text=text, background="lightyellow", relief="solid", borderwidth=1, font=("Segoe UI", 8))
+    label.pack()
+
+    def enter(event):
+        tooltip.deiconify()
+        x = event.x_root + 10
+        y = event.y_root + 10
+        tooltip.geometry(f"+{x}+{y}")
+
+    def leave(event):
+        tooltip.withdraw()
+
+    widget.bind("<Enter>", enter)
+    widget.bind("<Leave>", leave)
+
+create_tooltip(entry_height, "Enter height in selected unit")
+create_tooltip(entry_length, "Enter length in selected unit")
+create_tooltip(unit_menu, "Select input units")
+
+root.mainloop()
