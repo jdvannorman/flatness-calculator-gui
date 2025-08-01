@@ -27,7 +27,15 @@ root.geometry("400x450")
 root.resizable(False, False)
 
 # Load and display logo
-logo_img = Image.open("assets/logo.png")
+import sys, os
+
+def resource_path(relative_path):
+    """ Get absolute path to resource (works for dev and for PyInstaller) """
+    if hasattr(sys, '_MEIPASS'):
+        return os.path.join(sys._MEIPASS, relative_path)
+    return os.path.join(os.path.abspath("."), relative_path)
+
+logo_img = Image.open(resource_path("assets/logo.png"))
 logo_img = logo_img.resize((100, 100))
 logo_photo = ImageTk.PhotoImage(logo_img)
 logo_label = tk.Label(root, image=logo_photo)
