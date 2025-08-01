@@ -1,14 +1,16 @@
-# flatness_calculator.spec
+# -*- mode: python ; coding: utf-8 -*-
+import sys
+from PyInstaller.utils.hooks import collect_data_files
 
 block_cipher = None
 
 a = Analysis(
     ['flatness_gui.py'],
-    pathex=[],
+    pathex=['.'],
     binaries=[],
     datas=[
         ('assets/logo.png', 'assets'),
-        ('assets/app_icon.ico', '.'),
+        ('assets/app_icon.ico', 'assets'),
     ],
     hiddenimports=[],
     hookspath=[],
@@ -17,6 +19,7 @@ a = Analysis(
     win_no_prefer_redirects=False,
     win_private_assemblies=False,
     cipher=block_cipher,
+    noarchive=False
 )
 
 pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
@@ -27,10 +30,22 @@ exe = EXE(
     a.binaries,
     a.zipfiles,
     a.datas,
+    [],
     name='flatness_gui',
     debug=False,
+    bootloader_ignore_signals=False,
     strip=False,
     upx=True,
     console=False,
     icon='assets/app_icon.ico'
+)
+
+coll = COLLECT(
+    exe,
+    a.binaries,
+    a.zipfiles,
+    a.datas,
+    strip=False,
+    upx=True,
+    name='flatness_gui'
 )
