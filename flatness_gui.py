@@ -1,84 +1,72 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 from PIL import Image, ImageTk
-import os
 
 def calculate_flatness():
     try:
-        h = float(height_entry.get())
-        l = float(length_entry.get())
+        H_value = float(height_entry.get())
+        L_value = float(length_entry.get())
 
-        # Convert to inches internally
-        h_in = h if height_unit.get() == "in" else h / 25.4
-        l_in = l if length_unit.get() == "in" else l / 25.4
+        # Convert height if it's in mm
+        if height_unit.get() == 'mm':
+            H_value /= 25.4  # mm to inches
 
-        if l_in == 0:
-            raise ZeroDivisionError("Length cannot be zero.")
+        # Convert length if it's in mm
+        if length_unit.get() == 'mm':
+            L_value /= 25.4  # mm to inches
 
-        i_units = 2.467 * (h_in / l_in) ** 2 * 1e5
+        if L_value == 0:
+            raise ValueError("Length cannot be zero.")
 
-        # Convert back to mm for display
-        h_mm = h if height_unit.get() == "mm" else h * 25.4
-        l_mm = l if length_unit.get() == "mm" else l * 25.4
+        I_units = 2.467 * ((H_value / L_value) ** 2) * 1e5
 
-        result_label.config(text=f"I-Units: {i_units:.2f}")
-        details_label.config(
-            text=f"Height: {h:.2f} {height_unit.get()} ({h_mm:.2f} mm), "
-                 f"Length: {l:.2f} {length_unit.get()} ({l_mm:.2f} mm)"
-        )
-    except ValueError:
-        messagebox.showerror("Input Error", "Please enter valid numeric values.")
-    except ZeroDivisionError as e:
-        messagebox.showerror("Math Error", str(e))
+        result_var.set(f"Flatness: {I_units:,.2f} I-Units\n"
+                       f"(H = {H_value:.4f} in, L = {L_value:.4f} in)")
 
-# GUI Setup
-root = tk.Tk()
-root.title("Flatness Calculator")
+    except ValueError as e:
+        messagebox.showerror("Input Error", str(e))
 
-# Load logo
-logo_path = os.path.join(os.path.dirname(__file__), "assets", "logo.png")
-if os.path.exists(logo_path):
-    logo_img = Image.open(logo_path).resize((100, 100))
+app = tk.Tk()
+app.title("Flatness Calculator")
+
+# Logo
+try:
+    logo_img = Image.open("assets/logo.png")
+    logo_img = logo_img.resize((80, 80))
     logo = ImageTk.PhotoImage(logo_img)
-    logo_label = tk.Label(root, image=logo)
-    logo_label.image = logo
-    logo_label.grid(row=0, column=0, columnspan=3, pady=(10, 0))
+    logo_label = ttk.Label(app, image=logo)
+    logo_label.grid(row=0, column=0, columnspan=4, pady=(10, 0))
+except Exception:
+    pass
 
-# Height input
-tk.Label(root, text="Height:").grid(row=1, column=0, sticky="e")
-height_entry = tk.Entry(root)
+# Input Fields
+ttk.Label(app, text="Height (H):").grid(row=1, column=0, sticky="e", padx=5, pady=5)
+height_entry = ttk.Entry(app)
 height_entry.grid(row=1, column=1)
-height_unit = ttk.Combobox(root, values=["mm", "in"], width=5)
-height_unit.set("mm")
+
+height_unit = ttk.Combobox(app, values=["mm", "in"], width=5, state="readonly")
+height_unit.current(0)
 height_unit.grid(row=1, column=2)
 
-# Length input
-tk.Label(root, text="Length:").grid(row=2, column=0, sticky="e")
-length_entry = tk.Entry(root)
+ttk.Label(app, text="Length (L):").grid(row=2, column=0, sticky="e", padx=5, pady=5)
+length_entry = ttk.Entry(app)
 length_entry.grid(row=2, column=1)
-length_unit = ttk.Combobox(root, values=["in", "mm"], width=5)
-length_unit.set("in")
+
+length_unit = ttk.Combobox(app, values=["in", "mm"], width=5, state="readonly")
+length_unit.current(0)
 length_unit.grid(row=2, column=2)
 
-# Tooltip
-tooltip = tk.Label(
-    root,
-    text="Formula: I = 2.467 × (H/L)² × 10⁵ (H & L in inches)",
-    fg="gray"
-)
-tooltip.grid(row=3, column=0, columnspan=3, pady=(5, 0))
+# Tooltip info (simple labels for now)
+ttk.Label(app, text="* Height and Length must be > 0").grid(row=3, column=0, columnspan=4)
 
 # Calculate button
-tk.Button(root, text="Calculate", command=calculate_flatness).grid(row=4, column=0, columnspan=3, pady=10)
+ttk.Button(app, text="Calculate Flatness", command=calculate_flatness).grid(row=4, column=0, columnspan=4, pady=10)
 
-# Output labels
-result_label = tk.Label(root, text="I-Units: ")
-result_label.grid(row=5, column=0, columnspan=3)
-
-details_label = tk.Label(root, text="", fg="gray")
-details_label.grid(row=6, column=0, columnspan=3)
+# Result
+result_var = tk.StringVar()
+ttk.Label(app, textvariable=result_var, font=("Segoe UI", 10, "bold")).grid(row=5, column=0, columnspan=4, pady=5)
 
 # Credits
-tk.Label(root, text="© Coded by Daniel Van Norman & Anthony Scrivner", font=("Arial", 8), fg="gray").grid(row=7, column=0, columnspan=3, pady=(10, 5))
+ttk.Label(app, text="Coded by Daniel Van Norman & Anthony Scrivner", font=("Segoe UI", 8)).grid(row=6, column=0, columnspan=4, pady=10)
 
-root.mainloop()
+app.mainloop()
