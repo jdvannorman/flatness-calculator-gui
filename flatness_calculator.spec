@@ -1,4 +1,5 @@
-# -*- mode: python ; coding: utf-8 -*-
+# flatness_calculator.spec
+
 block_cipher = None
 
 a = Analysis(
@@ -10,8 +11,10 @@ a = Analysis(
     hookspath=[],
     runtime_hooks=[],
     excludes=[],
+    win_no_prefer_redirects=False,
+    win_private_assemblies=False,
+    cipher=block_cipher,
 )
-
 pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
 
 exe = EXE(
@@ -25,6 +28,7 @@ exe = EXE(
     strip=False,
     upx=True,
     console=False,
+    icon=None,
 )
 
 coll = COLLECT(
@@ -34,5 +38,6 @@ coll = COLLECT(
     a.datas,
     strip=False,
     upx=True,
+    upx_exclude=[],
     name='flatness_gui'
 )
