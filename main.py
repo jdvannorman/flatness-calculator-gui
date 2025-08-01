@@ -3,7 +3,7 @@ from tkinter import ttk, messagebox, filedialog
 import csv
 from PIL import Image, ImageTk
 
-# Conversion to inches
+# Unit converter
 def convert_to_inches(value, unit):
     if unit == "inches":
         return value
@@ -25,7 +25,7 @@ def calculate_flatness():
         l_in = convert_to_inches(l, l_unit)
 
         if l_in == 0:
-            raise ZeroDivisionError("Length in inches is zero.")
+            raise ZeroDivisionError("Length cannot be zero.")
 
         flatness = 2.467 * ((h_in / l_in) ** 2) * 1e5
         flatness_label.config(text=f"Flatness I = {flatness:.2f}")
@@ -50,18 +50,17 @@ app.title("Flatness Calculator")
 app.geometry("400x500")
 app.resizable(False, False)
 
-# Icon Placeholder
+# Icon
 try:
     app.iconbitmap("assets/app_icon.ico")
 except:
     pass
 
-# Logo Image
+# Logo
 try:
     logo_img = Image.open("assets/logo.png").resize((200, 100))
     logo_photo = ImageTk.PhotoImage(logo_img)
-    logo_label = tk.Label(app, image=logo_photo)
-    logo_label.pack(pady=10)
+    tk.Label(app, image=logo_photo).pack(pady=10)
 except:
     pass
 
@@ -76,7 +75,7 @@ length_frame = tk.Frame(app)
 length_entry = tk.Entry(length_frame)
 length_entry.pack(side="left")
 length_unit = ttk.Combobox(length_frame, values=["inches", "mm", "feet"])
-length_unit.current(0)
+length_unit.set("inches")
 length_unit.pack(side="left")
 length_frame.pack(pady=5)
 
@@ -86,7 +85,7 @@ height_frame = tk.Frame(app)
 height_entry = tk.Entry(height_frame)
 height_entry.pack(side="left")
 height_unit = ttk.Combobox(height_frame, values=["mm", "inches", "feet"])
-height_unit.current(0)
+height_unit.set("mm")
 height_unit.pack(side="left")
 height_frame.pack(pady=5)
 
