@@ -1,2 +1,4 @@
-# flatness-calculator-gui
-Flatness GUI Calculator (.exe builder)
+# Flatness Calculator GUI
+
+## Overview
+This graphical application computes flatness using:
