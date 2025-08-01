@@ -12,20 +12,21 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v4
         with:
-          python-version: '3.10'
+          python-version: '3.11'
 
       - name: Install dependencies
         run: |
-          pip install pillow pyinstaller
+          python -m pip install --upgrade pip
+          pip install pyinstaller pillow
 
-      - name: Build with .spec file
+      - name: Build EXE with PyInstaller
         run: |
-          pyinstaller flatness_calculator.spec
+          pyinstaller --onefile --noconsole --icon=assets/app_icon.ico --add-data "assets/logo.png;assets" main.py
 
-      - name: Upload artifact
+      - name: Upload EXE
         uses: actions/upload-artifact@v4
         with:
-          name: flatness_gui.exe
-          path: dist/flatness_gui.exe
+          name: flatness_calculator
+          path: dist/flatness_calculator.exe
