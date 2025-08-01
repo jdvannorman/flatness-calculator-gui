@@ -21,7 +21,7 @@ exe = EXE(
     pyz,
     a.scripts,
     [],
-    exclude_binaries=False,
+    exclude_binaries=False,  # onefile requires all to be bundled
     name='flatness_gui',
     debug=False,
     bootloader_ignore_signals=False,
@@ -29,8 +29,10 @@ exe = EXE(
     upx=True,
     console=False,
     icon=None,
-    single_file=True,
+    single_file=True,  # 💡 this makes it ONE FILE
 )
+
+
 
 coll = COLLECT(
     exe,
