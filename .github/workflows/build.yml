@@ -18,9 +18,9 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install pillow pyinstaller
+          pip install pyinstaller pillow
 
-      - name: Build with .spec file
+      - name: Build EXE
         run: |
           pyinstaller flatness_calculator.spec
 
@@ -28,4 +28,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: flatness_gui.exe
-          path: dist/flatness_gui.exe
+          path: dist/flatness_gui/flatness_gui.exe
