@@ -42,7 +42,7 @@ def resource_path(relative_path):
 logo_img = Image.open(resource_path("assets/logo.png"))
 logo_img = logo_img.resize((150, 100))
 logo_photo = ImageTk.PhotoImage(logo_img)
-logo_label = tk.Label(root, image=logo_photo)
+logo_label = tk.Label(image=logo_photo)
 logo_label.pack(pady=10)
 
 unit_var = tk.StringVar(value="inches")
