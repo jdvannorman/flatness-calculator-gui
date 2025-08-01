@@ -4,15 +4,24 @@
 This graphical application computes flatness using:
 I = 2.467 × (H₍inches₎ ÷ L₍inches₎)² × 10⁵
 
-- H can be entered in mm or inches
-- L can be entered in mm or inches
-- Outputs flatness I, plus Height and Length in both units
 
-Credits: © 2025 Daniel Van Norman & Anthony Scrivner
+> Height and Length are expected in inches. Inputs in millimeters will be automatically converted.
+
+---
+
+## Features
+
+- Supports both inches and mm input
+- Shows both metric and imperial units
+- Tooltip with equation reminder
+- Outputs formatted I-Unit value
+
+---
 
 ## Usage
 
-### On Linux/macOS with Python:
+### 🧪 Run locally
+
 ```bash
-pip install pillow
-python3 flatness_gui.py
+pip install -r requirements.txt
+python flatness_gui.py
