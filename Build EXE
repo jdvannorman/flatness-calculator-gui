@@ -1,0 +1,1 @@
+pyinstaller flatness_calculator.spec
