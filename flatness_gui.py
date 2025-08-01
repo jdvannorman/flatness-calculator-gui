@@ -23,7 +23,7 @@ def calculate_flatness():
 
 root = tk.Tk()
 root.title("Flatness Calculator")
-root.geometry("400x450")
+root.geometry("500x600")
 root.resizable(False, False)
 
 # Load and display logo
@@ -36,7 +36,7 @@ def resource_path(relative_path):
     return os.path.join(os.path.abspath("."), relative_path)
 
 logo_img = Image.open(resource_path("assets/logo.png"))
-logo_img = logo_img.resize((100, 100))
+logo_img = logo_img.resize((150, 100))
 logo_photo = ImageTk.PhotoImage(logo_img)
 logo_label = tk.Label(root, image=logo_photo)
 logo_label.pack(pady=10)
