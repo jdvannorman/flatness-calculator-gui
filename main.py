@@ -15,6 +15,11 @@ def convert_to_inches(value, unit):
         raise ValueError("Unsupported unit")
 
 def calculate_flatness():
+    coil = coil_entry.get().strip()
+    if not coil:
+        messagebox.showerror("Input Error", "Please enter Coil #.")
+        return None
+
     try:
         h = float(height_entry.get())
         h_unit = height_unit.get()
@@ -29,7 +34,7 @@ def calculate_flatness():
 
         flatness = 2.467 * ((h_in / l_in) ** 2) * 1e5
         flatness_label.config(text=f"Flatness I = {flatness:.2f}")
-        return coil_entry.get(), l, l_unit, h, h_unit, flatness
+        return coil, l, l_unit, h, h_unit, flatness
     except Exception as e:
         messagebox.showerror("Error", str(e))
         return None
@@ -38,12 +43,22 @@ def export_csv():
     result = calculate_flatness()
     if result:
         coil, l, l_unit, h, h_unit, flatness = result
-        file_path = filedialog.asksaveasfilename(defaultextension=".csv", filetypes=[("CSV files", "*.csv")])
+        default_filename = f"flatness_coil{coil}.csv"
+        file_path = filedialog.asksaveasfilename(
+            defaultextension=".csv",
+            filetypes=[("CSV files", "*.csv")],
+            initialfile=default_filename
+        )
         if file_path:
-            with open(file_path, "w", newline="") as f:
+            # Append mode so you can keep adding results
+            with open(file_path, "a", newline="") as f:
                 writer = csv.writer(f)
-                writer.writerow(["Coil #", "Length", "Length Unit", "Height", "Height Unit", "Flatness (I)"])
+                # If file is new, write header first
+                if f.tell() == 0:
+                    writer.writerow(["Coil #", "Length", "Length Unit", "Height", "Height Unit", "Flatness (I)"])
                 writer.writerow([coil, l, l_unit, h, h_unit, f"{flatness:.2f}"])
+            messagebox.showinfo("Export Successful", f"Data saved to {file_path}")
+
 
 app = tk.Tk()
 app.title("Flatness Calculator")
