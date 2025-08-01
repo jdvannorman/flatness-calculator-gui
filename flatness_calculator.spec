@@ -1,11 +1,13 @@
 # flatness_calculator.spec
+# PyInstaller spec file for Flatness GUI Calculator
+
 block_cipher = None
 
 a = Analysis(
-    ['flatness_gui.py'],
+    ['flatness_gui.py'],                 # Main script
     pathex=[],
     binaries=[],
-    datas=[('assets/logo.png', 'assets')],
+    datas=[('assets/logo.png', 'assets')],  # Include the logo folder
     hiddenimports=[],
     hookspath=[],
     runtime_hooks=[],
@@ -15,24 +17,29 @@ a = Analysis(
     cipher=block_cipher,
 )
 
-pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
+pyz = PYZ(
+    a.pure,
+    a.zipped_data,
+    cipher=block_cipher,
+)
 
 exe = EXE(
     pyz,
     a.scripts,
     [],
-    exclude_binaries=False,  # onefile requires all to be bundled
+    exclude_binaries=True,
     name='flatness_gui',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
     upx=True,
     console=False,
-    icon=None,
-    single_file=True,  # 💡 this makes it ONE FILE
+    icon='assets/app_icon.ico',        # ✅ Add your icon here
+    disable_windowed_traceback=False,
+    target_arch=None,
+    codesign_identity=None,
+    entitlements_file=None,
 )
-
-
 
 coll = COLLECT(
     exe,
