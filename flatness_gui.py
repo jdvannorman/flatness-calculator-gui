@@ -4,85 +4,91 @@ from PIL import Image, ImageTk
 
 def calculate_flatness():
     try:
-        h = float(height_entry.get())
-        l = float(length_entry.get())
+        h = float(entry_height.get())
+        l = float(entry_length.get())
 
-        h_unit = height_unit.get()
-        l_unit = length_unit.get()
+        if unit_var.get() == "mm":
+            h_inches = h / 25.4
+            l_inches = l / 25.4
+        else:
+            h_inches = h
+            l_inches = l
 
-        # Convert mm to inches if necessary
-        if h_unit == "mm":
-            h /= 25.4
-        if l_unit == "mm":
-            l /= 25.4
+        I = 2.467 * ((h_inches / l_inches) ** 2) * 1e5
 
-        if l == 0:
-            raise ZeroDivisionError("Length cannot be zero.")
+        I_mm = I * 25.4
+        result_var.set(f"Imperial: {I:.2f} in⁻¹\nMetric: {I_mm:.2f} mm⁻¹")
+    except Exception as e:
+        messagebox.showerror("Error", str(e))
 
-        result = 2.467 * ((h / l) ** 2) * 1e5
-        result_label.config(
-            text=f"Imperial: {result:.2f} I units\nMetric: {result * 0.0254:.2f} I (metric)"
-        )
-
-    except ValueError:
-        messagebox.showerror("Input Error", "Please enter valid numbers.")
-    except ZeroDivisionError as e:
-        messagebox.showerror("Input Error", str(e))
-
-# GUI setup
 root = tk.Tk()
 root.title("Flatness Calculator")
+root.geometry("500x600")
+root.resizable(False, False)
 
-# App icon (works after .exe build)
-try:
-    root.iconbitmap("assets/app_icon.ico")
-except:
-    pass
+# Load and display logo
+import sys, os
 
-# Load logo image
-logo_img = Image.open("assets/logo.png")
-logo_img = logo_img.resize((120, 120))
-logo = ImageTk.PhotoImage(logo_img)
+def resource_path(relative_path):
+    """ Get absolute path to resource (works for dev and for PyInstaller) """
+    if hasattr(sys, '_MEIPASS'):
+        return os.path.join(sys._MEIPASS, relative_path)
+    return os.path.join(os.path.abspath("."), relative_path)
 
-ttk.Label(root, image=logo).grid(row=0, column=0, columnspan=4, pady=10)
+logo_img = Image.open(resource_path("assets/logo.png"))
+logo_img = logo_img.resize((150, 100))
+logo_photo = ImageTk.PhotoImage(logo_img)
+logo_label = tk.Label(root, image=logo_photo)
+logo_label.pack(pady=10)
 
-# Height input
-ttk.Label(root, text="Height:").grid(row=1, column=0, sticky="e", padx=5)
-height_entry = ttk.Entry(root)
-height_entry.grid(row=1, column=1)
+unit_var = tk.StringVar(value="inches")
 
-height_unit = ttk.Combobox(root, values=["inches", "mm"], width=7, state="readonly")
-height_unit.set("inches")
-height_unit.grid(row=1, column=2)
-height_entry.insert(0, "0")
+frame = ttk.Frame(root, padding=10)
+frame.pack()
 
-# Tooltip
-height_entry_tooltip = tk.Label(root, text="Vertical deviation", foreground="gray")
-height_entry_tooltip.grid(row=1, column=3, sticky="w")
+ttk.Label(frame, text="Height:").grid(row=0, column=0, sticky="e")
+entry_height = ttk.Entry(frame)
+entry_height.grid(row=0, column=1)
+entry_height.insert(0, "0")
 
-# Length input
-ttk.Label(root, text="Length:").grid(row=2, column=0, sticky="e", padx=5)
-length_entry = ttk.Entry(root)
-length_entry.grid(row=2, column=1)
+ttk.Label(frame, text="Length:").grid(row=1, column=0, sticky="e")
+entry_length = ttk.Entry(frame)
+entry_length.grid(row=1, column=1)
+entry_length.insert(0, "1")
 
-length_unit = ttk.Combobox(root, values=["inches", "mm"], width=7, state="readonly")
-length_unit.set("inches")
-length_unit.grid(row=2, column=2)
-length_entry.insert(0, "0")
+ttk.Label(frame, text="Units:").grid(row=2, column=0, sticky="e")
+unit_menu = ttk.OptionMenu(frame, unit_var, "inches", "inches", "mm")
+unit_menu.grid(row=2, column=1, sticky="ew")
 
-length_entry_tooltip = tk.Label(root, text="Total length of the object", foreground="gray")
-length_entry_tooltip.grid(row=2, column=3, sticky="w")
+ttk.Button(root, text="Calculate", command=calculate_flatness).pack(pady=10)
 
-# Calculate button
-ttk.Button(root, text="Calculate", command=calculate_flatness).grid(row=3, column=0, columnspan=4, pady=10)
+result_var = tk.StringVar()
+ttk.Label(root, textvariable=result_var, font=("Segoe UI", 12)).pack()
 
-# Output
-result_label = ttk.Label(root, text="Imperial: \nMetric:")
-result_label.grid(row=4, column=0, columnspan=4, pady=10)
+ttk.Label(root, text="Coded by Daniel Van Norman & Anthony Scrivner", font=("Segoe UI", 9)).pack(pady=20)
 
-# Credits
-ttk.Label(root, text="Coded by Daniel Van Norman & Anthony Scrivner", font=("Arial", 8)).grid(
-    row=5, column=0, columnspan=4, pady=5
-)
+# Tooltips
+def create_tooltip(widget, text):
+    tooltip = tk.Toplevel(widget)
+    tooltip.withdraw()
+    tooltip.overrideredirect(True)
+    label = tk.Label(tooltip, text=text, background="lightyellow", relief="solid", borderwidth=1, font=("Segoe UI", 8))
+    label.pack()
+
+    def enter(event):
+        tooltip.deiconify()
+        x = event.x_root + 10
+        y = event.y_root + 10
+        tooltip.geometry(f"+{x}+{y}")
+
+    def leave(event):
+        tooltip.withdraw()
+
+    widget.bind("<Enter>", enter)
+    widget.bind("<Leave>", leave)
+
+create_tooltip(entry_height, "Enter height in selected unit")
+create_tooltip(entry_length, "Enter length in selected unit")
+create_tooltip(unit_menu, "Select input units")
 
 root.mainloop()
