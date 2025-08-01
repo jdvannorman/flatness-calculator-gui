@@ -23,10 +23,11 @@ jobs:
 
       - name: Build EXE with PyInstaller
         run: |
-          pyinstaller --onefile --noconsole --icon=assets/app_icon.ico --add-data "assets/logo.png;assets" main.py
+          pyinstaller --name=flatness_calculator --onefile --noconsole --icon=assets/app_icon.ico --add-data "assets/logo.png;assets" main.py
 
       - name: Upload EXE
         uses: actions/upload-artifact@v4
         with:
           name: flatness_calculator
           path: dist/flatness_calculator.exe
+
