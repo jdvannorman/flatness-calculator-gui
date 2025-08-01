@@ -21,7 +21,7 @@ exe = EXE(
     pyz,
     a.scripts,
     [],
-    exclude_binaries=True,
+    exclude_binaries=False,
     name='flatness_gui',
     debug=False,
     bootloader_ignore_signals=False,
@@ -29,6 +29,7 @@ exe = EXE(
     upx=True,
     console=False,
     icon=None,
+    single_file=True,
 )
 
 coll = COLLECT(
