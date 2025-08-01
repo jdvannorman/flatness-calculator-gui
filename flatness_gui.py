@@ -48,7 +48,7 @@ frame.pack()
 
 
 # Height input
-ttk.Label(root, text="Height:").grid(row=1, column=0, sticky="e", padx=5)
+ttk.Label(root, text="Height:").grid(row=0, column=0, sticky="e", padx=5)
 height_entry = ttk.Entry(root)
 height_entry.grid(row=1, column=1)
 
@@ -62,13 +62,13 @@ height_entry_tooltip = tk.Label(root, text="Vertical deviation", foreground="gra
 height_entry_tooltip.grid(row=1, column=3, sticky="w")
 
 # Length input
-ttk.Label(root, text="Length:").grid(row=2, column=0, sticky="e", padx=5)
+ttk.Label(root, text="Length:").grid(row=3, column=0, sticky="e", padx=5)
 length_entry = ttk.Entry(root)
 length_entry.grid(row=2, column=1)
 
 length_unit = ttk.Combobox(root, values=["inches", "mm"], width=7, state="readonly")
 length_unit.set("inches")
-length_unit.grid(row=2, column=2)
+length_unit.grid(row=4, column=2)
 length_entry.insert(0, "0")
 
 length_entry_tooltip = tk.Label(root, text="Total length of the object", foreground="gray")
