@@ -28,4 +28,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: flatness_gui.exe
-          path: dist/*.exe
+          path: dist/flatness_gui/flatness_gui.exe
