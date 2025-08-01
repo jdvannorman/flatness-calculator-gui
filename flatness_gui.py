@@ -73,14 +73,14 @@ root = tk.Tk()
 root.title("Flatness Calculator with Units & Help")
 
 # --- Add Logo at the top ---
-try:
-    logo_image = Image.open("Logo.png")  # Load the image
-    logo_image = logo_image.resize((100, 100), Image.ANTIALIAS)
-    logo_photo = ImageTk.PhotoImage(logo_image)
-    logo_label = tk.Label(root, image=logo_photo)
-    logo_label.grid(row=0, column=3, rowspan=4, padx=10, pady=10)
-except Exception as e:
-    print("Error loading logo:", e)
+#try:
+#    logo_image = Image.open("Logo.png")  # Load the image
+#    logo_image = logo_image.resize((100, 100), Image.ANTIALIAS)
+#    logo_photo = ImageTk.PhotoImage(logo_image)
+#    logo_label = tk.Label(root, image=logo_photo)
+#    logo_label.grid(row=0, column=3, rowspan=4, padx=10, pady=10)
+#except Exception as e:
+#    print("Error loading logo:", e)
 
 # Height input
 tk.Label(root, text="Enter Height (H):").grid(row=0, column=0, padx=10, pady=5, sticky='e')
@@ -108,9 +108,21 @@ calc_btn.grid(row=2, column=0, columnspan=3, pady=10)
 result_label = tk.Label(root, text="", justify='left')
 result_label.grid(row=3, column=0, columnspan=3, pady=10)
 
-# --- Add credits at the bottom ---
-credit_label = tk.Label(root, text="Coded by: Daniel Van Norman & Anthony Scrivner", font=("Arial", 9, "italic"))
-credit_label.grid(row=4, column=0, columnspan=4, pady=(5, 10))
+# Load and display image (at the top)
+from PIL import Image, ImageTk
+
+logo_img = Image.open("logo.png")  # Replace with your filename
+logo_img = logo_img.resize((100, 100), Image.ANTIALIAS)
+logo_photo = ImageTk.PhotoImage(logo_img)
+logo_label = tk.Label(root, image=logo_photo)
+logo_label.image = logo_photo
+logo_label.grid(row=0, column=0, columnspan=3, pady=(10, 5))
+
+# Credits (at the bottom)
+credits_label = tk.Label(root, text="© 2025 Daniel Van Norman & Anthony Scrivner", font=("Arial", 8), fg="gray")
+credits_label.grid(row=99, column=0, columnspan=3, pady=(10, 5))
+
+
 
 # Tooltips
 ToolTip(entry_H, "Enter height value.\nUnits selectable on the right.")
