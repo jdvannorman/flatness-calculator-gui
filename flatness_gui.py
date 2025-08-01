@@ -30,17 +30,24 @@ def calculate_flatness():
 app = tk.Tk()
 app.title("Flatness Calculator")
 
-# Logo (if available)
-try:
-    logo_img = Image.open("assets/logo.png")
-    logo_img = logo_img.resize((200, 100), Image.LANCZOS)
-    logo = ImageTk.PhotoImage(logo_img)
-    logo_label = tk.Label(app, image=logo)
-    logo_label.pack()
-except:
-    pass  # logo optional
+# Load and display logo
+import sys, os
 
-frame = ttk.Frame(app, padding=20)
+def resource_path(relative_path):
+    """ Get absolute path to resource (works for dev and for PyInstaller) """
+    if hasattr(sys, '_MEIPASS'):
+        return os.path.join(sys._MEIPASS, relative_path)
+    return os.path.join(os.path.abspath("."), relative_path)
+
+logo_img = Image.open(resource_path("assets/logo.png"))
+logo_img = logo_img.resize((150, 100))
+logo_photo = ImageTk.PhotoImage(logo_img)
+logo_label = tk.Label(root, image=logo_photo)
+logo_label.pack(pady=10)
+
+unit_var = tk.StringVar(value="inches")
+
+frame = ttk.Frame(root, padding=10)
 frame.pack()
 
 # Height input
